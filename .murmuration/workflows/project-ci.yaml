@@ -98,7 +98,7 @@ jobs:
       - name: Create ECR repo [TF apply]
         shell: bash
         env:
-           TERRAFORM_DIR: .murmuration-ci
+           TERRAFORM_DIR: .murmuration
         run: |
           set -eux
           terraform apply \
