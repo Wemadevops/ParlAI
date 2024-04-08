@@ -81,7 +81,7 @@ jobs:
       - name: TF init
         shell: bash
         env:
-           TERRAFORM_DIR: .murmuration-ci
+           TERRAFORM_DIR: .murmuration
         run: |
           set -eux
           terraform init -upgrade -reconfigure \
