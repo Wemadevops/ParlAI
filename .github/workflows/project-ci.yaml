@@ -128,7 +128,7 @@ jobs:
 
       - name: Test
         id: tests
-        shell: python3
+        shell: bash
         run: pytest
 
       - name: Push image
