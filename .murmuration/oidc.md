@@ -15,7 +15,7 @@ condition {
 condition {
   test     = "StringLike"
   variable = "${replace(aws_iam_openid_connect_provider.git.url, "https://", "")}:sub"
-  values   = ["repo:Kenmakhanu/*:*"]
+  values   = ["repo:suzettesgwilliams/*:*"]
 }
 
 
@@ -35,4 +35,4 @@ resource "aws_iam_role_policy_attachment" "git_actions_oidc_attachment" { role =
 
 output "git_actions_oidc" { value = aws_iam_role.git_action.arn }
 
-provider "aws" { region = "us-west-2" }
+provider "aws" { region = "us-east-1" }
