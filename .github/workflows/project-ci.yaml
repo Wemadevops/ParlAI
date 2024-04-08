@@ -129,7 +129,9 @@ jobs:
       - name: Test
         id: tests
         shell: bash
-        run: pytest
+        run: |
+            pip install pytest
+            pytest
 
       - name: Push image
         id: Push
