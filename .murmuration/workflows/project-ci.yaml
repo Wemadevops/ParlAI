@@ -4,11 +4,11 @@ on:
     inputs:
       path_to_dockerfile:
         description: Path to the dockerfile (default = 'Dockerfile')
-        default: "ParlAI/Dockerfile"
+        default: "./Dockerfile"
         type: string
       docker_build_dir:
         description: Docker build directory (default = '.')
-        default: "ParlAI"
+        default: "."
         type: string
       image_tag:
         description: Tag to apply to images.
@@ -16,11 +16,11 @@ on:
         default: snapshot-artifact
       lifecycle_policy_file:
         description: Path to the lifecycle policy JSON file (default = 'policy.json')
-        default: ".murmuration-ci/policy.json"
+        default: "./policy.json"
         type: string
       backend_s3_bucket:
         description: Name of the S3bucket for Terraform backend
-        default: "test-aws-project"
+        default: "mytest-aws-project-ci"
         type: string
       backend_iam_role:
         description: Name of the Terraform backend assumable IAM Role
@@ -35,7 +35,7 @@ on:
         type: string
       aws_region:
         description: Target AWS Region
-        default: "us-west-2"
+        default: "us-east-1"
         type: string
 
 
@@ -81,7 +81,7 @@ jobs:
       - name: TF init
         shell: bash
         env:
-           TERRAFORM_DIR: .murmuration-ci
+           TERRAFORM_DIR: .murmuration
         run: |
           set -eux
           terraform init -upgrade -reconfigure \
