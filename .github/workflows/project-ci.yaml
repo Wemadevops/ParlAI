@@ -131,7 +131,7 @@ jobs:
         shell: bash
         run: |
             pip install pytest
-            pytest
+            python -m pytest .
 
       - name: Push image
         id: Push
