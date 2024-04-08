@@ -4,11 +4,11 @@ on:
     inputs:
       path_to_dockerfile:
         description: Path to the dockerfile (default = 'Dockerfile')
-        default: "./Dockerfile"
+        default: "ParlAI/Dockerfile"
         type: string
       docker_build_dir:
         description: Docker build directory (default = '.')
-        default: "."
+        default: "ParlAI"
         type: string
       image_tag:
         description: Tag to apply to images.
@@ -41,11 +41,7 @@ on:
 
 # concurrency required to avoid terraform lock contention during ECR provisioning
 concurrency: ci-${{ github.repository }}-docker-pipeline
-env:
-    ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-    ECR_REPOSITORY: ${{ env.ECR_REPO_NAME }}
-    IMAGE_TAG: ${{ inputs.image_tag }}
-    TERRAFORM_DIR: .murmuration-ci
+
 
 jobs:
   docker:
@@ -65,7 +61,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::${{ inputs.aws_account_id }}:role/github-actions-rmodi
+          role-to-assume: arn:aws:iam::${{ inputs.aws_account_id }}:role/git-actions-aws-oidc
           aws-region: ${{ inputs.aws_region }}
 
       - name: Setup Terraform
@@ -84,6 +80,8 @@ jobs:
 
       - name: TF init
         shell: bash
+        env:
+           TERRAFORM_DIR: .murmuration-ci
         run: |
           set -eux
           terraform init -upgrade -reconfigure \
@@ -99,6 +97,8 @@ jobs:
 
       - name: Create ECR repo [TF apply]
         shell: bash
+        env:
+           TERRAFORM_DIR: .murmuration-ci
         run: |
           set -eux
           terraform apply \
@@ -119,6 +119,10 @@ jobs:
       - name: Build and Tag
         id: build-tag
         shell: bash
+        env:
+            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+            ECR_REPOSITORY: ${{ env.ECR_REPO_NAME }}
+            IMAGE_TAG: ${{ inputs.image_tag }}
         run: |
           docker build "${{ inputs.docker_build_dir }}" -f "${{ inputs.path_to_dockerfile }}" -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
@@ -129,6 +133,10 @@ jobs:
 
       - name: Push image
         id: Push
+        env:
+            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+            ECR_REPOSITORY: ${{ env.ECR_REPO_NAME }}
+            IMAGE_TAG: ${{ inputs.image_tag }}
         run: |
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
           echo "IMAGE $IMAGE_TAG is pushed to $ECR_REGISTRY/$ECR_REPOSITORY"
