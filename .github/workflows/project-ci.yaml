@@ -129,7 +129,7 @@ jobs:
       - name: Test
         id: tests
         shell: bash
-        run: pip install pytest && pip install iopath && python3 -m pytest .
+        run: pip install pytest && pip install pytest-regressions && pip install iopath && python3 -m pytest .
 
       - name: Push image
         id: Push
